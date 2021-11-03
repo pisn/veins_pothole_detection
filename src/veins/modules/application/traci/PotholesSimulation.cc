@@ -76,6 +76,9 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
     // member variables such as currentPosition and currentSpeed are updated in the parent class
 
     Coord pos = DemoBaseApplLayer::curPosition;
+    Coord speed = DemoBaseApplLayer::curSpeed;
+    int deviceID = DemoBaseApplLayer::getId();
 
+    std::cout << "DeviceID: " + std::to_string(deviceID) + " Speed: " + double_to_str(speed.z) << std::endl;
 
 }
