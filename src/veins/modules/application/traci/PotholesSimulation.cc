@@ -76,6 +76,9 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
     // member variables such as currentPosition and currentSpeed are updated in the parent class
 
     double speed = mobility->getSpeed();
-    std::cout << "DeviceID: " + std::to_string(deviceID) + " Speed: " + double_to_str(speed) << std::endl;
+
+    if(speed < 1){
+        traciVehicle->setMaxSpeed(2);
+    }
 
 }

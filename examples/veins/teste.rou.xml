@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2021-11-05 04:48:46 by Eclipse SUMO netedit Version 1.10.0
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <sumo-net-file value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/2021-10-13-22-59-10/osm.net.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/2021-10-13-22-59-10/osm.net.xml"/>
+        <output.street-names value="true"/>
+    </output>
+
+    <processing>
+        <geometry.min-radius.fix.railways value="false"/>
+        <geometry.max-grade.fix value="false"/>
+        <offset.disable-normalization value="true"/>
+        <lefthand value="false"/>
+    </processing>
+
+    <junctions>
+        <no-turnarounds value="true"/>
+        <junctions.corner-detail value="5"/>
+        <junctions.limit-turn-speed value="5.5"/>
+        <rectangular-lane-cut value="false"/>
+    </junctions>
+
+    <pedestrian>
+        <walkingareas value="false"/>
+    </pedestrian>
+
+    <netedit>
+        <route-files value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/2021-10-13-22-59-10/teste.rou.xml"/>
+    </netedit>
+
+    <report>
+        <aggregate-warnings value="5"/>
+    </report>
+
+</configuration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="Caminhoes" vClass="truck" color="241,36,44"/>
+    <vType id="onibus" vClass="bus" color="black"/>
+    <route edges="939540487 941832850 939972821-AddedOnRampEdge 939972821 939972820 575382594-AddedOnRampEdge 575382594 322544293#1 4626488 940005793#0 940005793#1 940005793#2 940005792 153713989 939972818 939972819 575187288 939972817 939972816 939972815 939972814 939982940 939982939 939982938 939988979 939988981 939988980 939982935 939982937 939982936 575187289 575187289-AddedOffRampEdge 153713978#1 153713978#2-AddedOnRampEdge 153713978#2 gneE8 gneE9 gneE10 gneE11 gneE12 gneE13 gneE15 gneE16 4626531#2 939531671 939531671-AddedOffRampEdge 939531672#0 939531672#1 939531672#2 939531672#3 651609801#0 651609801#1 651609801#2 651609801#3 4626679#1 4626679#2 4626679#3 4626684#2 4626684#3 4626684#4 4626684#5 4626684#6 4626684#7" color="yellow" id="anchieta_descida"/>
+    <route edges="489458878#3 489458878#5 489458878#6 489458878#7 746255980#2 746255987#1 939531674#0 939531674#1 939531673-AddedOnRampEdge 939531673 939531673-AddedOffRampEdge 651609802#0 651609802#1 4626507#1 4626507#2 4626507#3 92231487#1 92231487#2 92231487#3 92231487#4-AddedOnRampEdge gneE18 gneE19 gneE20 gneE21 gneE22 gneE23 gneE24 286831812 286831812-AddedOffRampEdge 939958187 4624352 939972823#0 939972823#1-AddedOnRampEdge 939972823#1 939972823#1-AddedOffRampEdge 939972822 941616728 941616727 310668918#0 310668918#0-AddedOffRampEdge 310668918#1 941616725-AddedOnRampEdge 941616725" color="yellow" id="anchieta_subida"/>
+    <flow id="caminhoes_descida" type="Caminhoes" begin="0.00" color="255,63,0" route="anchieta_descida" end="3600.00" vehsPerHour="600.00"/>
+    <flow id="caminhoes_subindo" type="Caminhoes" begin="0.00" route="anchieta_subida" end="3600.00" vehsPerHour="600.00"/>
+    <flow id="carros_descida_anchieta" begin="0.00" route="anchieta_descida" end="3600.00" vehsPerHour="3000.00"/>
+    <flow id="carros_subindo" begin="0.00" route="anchieta_subida" end="3600.00" vehsPerHour="3000.00"/>
+    <flow id="flow_0" type="onibus" begin="0.00" color="255,0,249" route="anchieta_descida" end="3600.00" vehsPerHour="600.00"/>
+    <flow id="onibus_subindo" type="onibus" begin="0.00" color="196,0,255" route="anchieta_subida" end="3600.00" vehsPerHour="600.00"/>
+</routes>
