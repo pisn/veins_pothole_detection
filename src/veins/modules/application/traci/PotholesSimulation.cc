@@ -75,10 +75,7 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
     // the vehicle has moved. Code that reacts to new positions goes here.
     // member variables such as currentPosition and currentSpeed are updated in the parent class
 
-    Coord pos = DemoBaseApplLayer::curPosition;
-    Coord speed = DemoBaseApplLayer::curSpeed;
-    int deviceID = DemoBaseApplLayer::getId();
-
-    std::cout << "DeviceID: " + std::to_string(deviceID) + " Speed: " + double_to_str(speed.z) << std::endl;
+    double speed = mobility->getSpeed();
+    std::cout << "DeviceID: " + std::to_string(deviceID) + " Speed: " + double_to_str(speed) << std::endl;
 
 }
