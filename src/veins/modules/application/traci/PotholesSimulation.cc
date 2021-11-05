@@ -75,10 +75,10 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
     // the vehicle has moved. Code that reacts to new positions goes here.
     // member variables such as currentPosition and currentSpeed are updated in the parent class
 
-    double speed = mobility->getSpeed();
+    /*double speed = mobility->getSpeed();
 
     if(speed < 1){
         traciVehicle->setMaxSpeed(2);
-    }
+    }*/
 
 }
