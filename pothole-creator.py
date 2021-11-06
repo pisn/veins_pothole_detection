@@ -1,13 +1,36 @@
 import xml.etree.ElementTree as ET
 import random
 import csv
+import getopt
+import sys
 
-edgesFilePath = '/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/examples/veins/osm.edg.xml'
-nodesFilePath = '/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/examples/veins/osm.nod.xml'
-routesFilePath = '/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/examples/veins/teste.rou.xml'
-outputPath = '/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/examples/veins/potholes.csv'
+short_options = 'e:n:r:o:p:'
+long_options = ['edges=','nodes=','routes=','output=','potholes=']
 
-potholesPerRoute = 30
+argumentsList = sys.argv[1:]
+
+arguments, values = getopt.getopt(argumentsList, short_options,long_options)
+
+edgesFilePath = None
+nodesFilePath = None
+routesFilePath = None
+outputPath = None
+potholesPerRoute = None
+
+for arg, val in arguments:
+    if arg in ('-e', '--edges'):
+        edgesFilePath = val
+    elif arg in ('-n','--nodes'):
+        nodesFilePath = val
+    elif arg in ('-r','--routes'):
+        routesFilePath = val
+    elif arg in ('-o','--output'):
+        outputPath = val
+    elif arg in ('-p','--potholes'):
+        potholesPerRoute = int(val)
+
+if edgesFilePath == None or nodesFilePath == None or routesFilePath == None or outputPath == None or potholesPerRoute == None:             
+    exit('Invalid Arguments')
 
 edgesTree = ET.parse(edgesFilePath)
 nodesTree = ET.parse(nodesFilePath)
