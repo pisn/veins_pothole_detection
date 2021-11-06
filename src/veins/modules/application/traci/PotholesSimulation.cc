@@ -81,4 +81,7 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
         traciVehicle->setMaxSpeed(2);
     }*/
 
+
+    std::cout << "NodeID:" + std::to_string(mobility->getId()) + " Position:" + curPosition.info() + " Lane: " + std::to_string(traciVehicle->getLaneIndex()) + " RoadID:" + traciVehicle->getRoadId() << std::endl;
+
 }
