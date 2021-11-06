@@ -27,63 +27,7 @@ using namespace veins;
 
 Define_Module(veins::PotholesSimulation);
 
-std::vector<std::pair<std::string, std::vector<std::string>>> read_csv(std::string filename){
-    // Reads a CSV file into a vector of <string, vector<int>> pairs where
-    // each pair represents <column name, column values>
-
-    // Create a vector of <string, int vector> pairs to store the result
-    std::vector<std::pair<std::string, std::vector<std::string>>> result;
-
-    // Create an input filestream
-    std::ifstream myFile(filename);
-
-    // Make sure the file is open
-    if(!myFile.is_open()) throw std::runtime_error("Could not open file");
-
-    // Helper vars
-    std::string line, colname, colvalue;
-    std::string val;
-
-    // Read the column names
-    if(myFile.good())
-    {
-        // Extract the first line in the file
-        std::getline(myFile, line);
-
-        // Create a stringstream from line
-        std::stringstream ss(line);
-
-        // Extract each column name
-        while(std::getline(ss, colname, ',')){
-
-            // Initialize and add <colname, int vector> pairs to result
-            result.push_back({colname, std::vector<std::string> {}});
-        }
-    }
-
-    // Read data, line by line
-    while(std::getline(myFile, line))
-    {
-        // Create a stringstream of the current line
-        std::stringstream ss(line);
-
-        // Keep track of the current column index
-        int colIdx = 0;
-
-        while(std::getline(ss, colvalue, ',')){
-
-            // Initialize and add <colname, int vector> pairs to result
-            result.at(colIdx).second.push_back(colvalue);
-            colIdx++;
-        }
-
-    }
-
-    // Close file
-    myFile.close();
-
-    return result;
-}
+std::map<std::string, std::vector<std::string>> potholes;
 
 std::map<std::string, std::vector<std::string>> read_csv_map(std::string filename){
     // Reads a CSV file into a vector of <string, vector<int>> pairs where
@@ -102,23 +46,13 @@ std::map<std::string, std::vector<std::string>> read_csv_map(std::string filenam
     // Helper vars
     std::string line;
     std::string val;
-    size_t pos = 0;
 
     std::getline(myFile, line); //Just to read first line. Will descart
 
     // Read data, line by line
     while(std::getline(myFile, line))
     {
-        std::cout << "Reading line: " + line << std::endl;
-
         std::vector<std::string> values;
-
-        /*
-        while((pos = line.find(delimiter)) != std::string::npos){
-            val = line.substr(0, pos);
-            values.push_back(val);
-            line.erase(0, pos + 1);
-        }*/
 
         char* ptr;
         ptr=strtok(&line[0], ",");
@@ -147,9 +81,7 @@ void PotholesSimulation::initialize(int stage)
         EV << "Initializing " << par("appName").stringValue() << std::endl;
 
         // Read three_cols.csv and ones.csv
-        std::map<std::string, std::vector<std::string>> potholesFile = read_csv_map("potholes.csv");
-
-        std::cout << "Initializing potholes" << std::endl;
+        potholes= read_csv_map("potholes2.csv");
     }
     else if (stage == 1) {
         // Initializing members that require initialized other modules goes here
@@ -198,5 +130,23 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
     if(speed < 1){
         traciVehicle->setMaxSpeed(2);
     }*/
+
+    std::string roadId = traciVehicle->getRoadId();
+
+    if(potholes.count(roadId) > 0){
+        std::vector<std::string>pothole = potholes[roadId];
+
+        int potholeLane = std::stoi(pothole[1]);
+        int currentLane = traciVehicle->getLaneIndex();
+
+        double potholePosition = std::stod(pothole[0]);
+        double currentPosition = traciVehicle->getLanePosition();
+
+        if(currentLane == potholeLane){
+            if(std::abs(currentPosition - potholePosition) < 0.8 ){
+                std::cout << "Encontrou um buraco" <<std::endl;
+            }
+        }
+    }
 
 }

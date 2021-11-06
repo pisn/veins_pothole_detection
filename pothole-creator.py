@@ -3,6 +3,7 @@ import random
 import csv
 import getopt
 import sys
+import math
 
 short_options = 'e:n:r:o:p:'
 long_options = ['edges=','nodes=','routes=','output=','potholes=']
@@ -78,13 +79,9 @@ for route in routes:
             startNode = (startNode['x'], startNode['y'])
             endNode = (endNode['x'], endNode['y'])
 
-            
-            if startNode[0] > endNode[0]:
-                pothole_x = endNode[0] + random.random() * (startNode[0] - endNode[0])
-            else:
-                pothole_x = startNode[0] + random.random() * (endNode[0] - startNode[0])
+            edgeLength = math.sqrt((endNode[0] - startNode[0])**2 + (endNode[1] - startNode[1])**2)
 
-            pothole_y = (endNode[1] - startNode[1])/(endNode[0] - startNode[0])*(pothole_x - startNode[0]) + startNode[1]
+            potholePosition = random.random()*edgeLength           
 
         else:       
             shapeIndex = random.randint(0, len(selectedEdge['shape'])-2)
@@ -92,16 +89,13 @@ for route in routes:
             shape_0 = selectedEdge['shape'][shapeIndex]
             shape_1 = selectedEdge['shape'][shapeIndex + 1]        
 
-            if shape_0[0] > shape_1[0]:
-                pothole_x = shape_1[0] + random.random() * (shape_0[0] - shape_1[0])
-            else:
-                pothole_x = shape_0[0] + random.random() * (shape_1[0] - shape_0[0])
+            edgeLength = math.sqrt((shape_1[0] - shape_0[0])**2 + (shape_1[1] - shape_0[1])**2)
 
-            pothole_y = (shape_1[1] - shape_0[1])/(shape_1[0] - shape_0[0])*(pothole_x - shape_0[0]) + shape_0[1]
+            potholePosition = random.random()*edgeLength
 
         laneId = random.randint(0, selectedEdge['numLanes'] -1)
 
-        potholes.append({ 'roadId' : selectedEdge['id'],'x' : pothole_x, 'y' : pothole_y, 'laneId' : laneId})
+        potholes.append({ 'roadId' : selectedEdge['id'],'position' : potholePosition, 'laneId' : laneId, 'routeId' : route['id']})
 
 with open(outputPath, 'w') as outFile:
     writer = csv.DictWriter(outFile, potholes[0].keys())
