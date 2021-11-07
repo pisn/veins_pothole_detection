@@ -21,6 +21,7 @@
 //
 
 #include <veins/modules/application/traci/PotholesSimulation.h>
+#include "veins/modules/application/traci/PotholeDetectionMessage_m.h"
 #include <map>
 
 using namespace veins;
@@ -120,6 +121,14 @@ void PotholesSimulation::onWSM(BaseFrame1609_4* wsm)
 {
     // Your application has received a data message from another car or RSU
     // code for handling the message goes here, see TraciDemo11p.cc for examples
+
+    PotholeDetectionMessage* message = check_and_cast<PotholeDetectionMessage*>(wsm);
+
+    // repeat the received traffic update once in 2 seconds plus some random delay
+    message->setSenderAddress(myId);
+    message->setSerial(3);
+    scheduleAt(simTime() + 2 + uniform(0.01, 0.2), message->dup());
+
 }
 
 void PotholesSimulation::onWSA(DemoServiceAdvertisment* wsa)
@@ -159,8 +168,26 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
                     hitPotholes++;
 
                     std::cout << "Pothole hit! NodeID:" + std::to_string(myId) <<std::endl;
+
+                    //Updating color in simulation
                     findHost()->getDisplayString().setTagArg("i", 1, "red");
                     potholeHitRoundCount = 0;
+
+                    //Comunicating RSU of detected pothole
+                    PotholeDetectionMessage* message = new PotholeDetectionMessage();
+                    populateWSM(message); //populating lower layers
+                    message->setPotholePosition(currentPosition);
+                    message->setPotholeLane(currentLane);
+
+                    //if channel changing is enabled, send in service channel 2.
+                    if(dataOnSch){
+                        startService(Channel::sch2, 57, "Potholes information service");
+                        scheduleAt(computeAsynchronousSendingTime(1, ChannelType::service), message);
+                    }
+                    else { //send right away, no switching is available
+                        sendDown(message);
+                    }
+
                 }
             }
         }
