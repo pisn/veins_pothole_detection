@@ -141,12 +141,6 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
     // the vehicle has moved. Code that reacts to new positions goes here.
     // member variables such as currentPosition and currentSpeed are updated in the parent class
 
-    /*double speed = mobility->getSpeed();
-
-    if(speed < 1){
-        traciVehicle->setMaxSpeed(2);
-    }*/
-
     std::string roadId = traciVehicle->getRoadId();
 
     if(potholesMap.count(roadId) > 0){
@@ -165,9 +159,20 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
                     hitPotholes++;
 
                     std::cout << "Pothole hit! NodeID:" + std::to_string(myId) <<std::endl;
+                    findHost()->getDisplayString().setTagArg("i", 1, "red");
+                    potholeHitRoundCount = 0;
                 }
             }
         }
+    }
+
+    if(potholeHitRoundCount >=0){
+        potholeHitRoundCount++;
+    }
+
+    if(potholeHitRoundCount >= 10){
+        findHost()->getDisplayString().setTagArg("i", 1, "gray");
+        potholeHitRoundCount = -1;
     }
 
 }

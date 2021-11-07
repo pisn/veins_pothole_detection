@@ -54,6 +54,9 @@ protected:
     void handlePositionUpdate(cObject* obj) override;
 
     int hitPotholes;
+private:
+    int potholeHitRoundCount;
 };
+
 
 } // namespace veins
