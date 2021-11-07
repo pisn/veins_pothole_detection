@@ -52,6 +52,8 @@ protected:
 
     void handleSelfMsg(cMessage* msg) override;
     void handlePositionUpdate(cObject* obj) override;
+
+    int hitPotholes;
 };
 
 } // namespace veins

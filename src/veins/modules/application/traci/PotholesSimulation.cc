@@ -27,15 +27,16 @@ using namespace veins;
 
 Define_Module(veins::PotholesSimulation);
 
-std::map<std::string, std::vector<std::string>> potholes;
+std::map<std::string, std::vector<std::vector<std::string>>> potholesMap;
+bool potholesMapLoaded = false;
 
-std::map<std::string, std::vector<std::string>> read_csv_map(std::string filename){
+std::map<std::string, std::vector<std::vector<std::string>>> read_potholes_map(std::string filename){
     // Reads a CSV file into a vector of <string, vector<int>> pairs where
     // each pair represents <column name, column values>
     std::string delimiter = ",";
 
     // Create a vector of <string, int vector> pairs to store the result
-    std::map<std::string, std::vector<std::string>> result;
+    std::map<std::string, std::vector<std::vector<std::string>>> result;
 
     // Create an input filestream
     std::ifstream myFile(filename);
@@ -63,7 +64,14 @@ std::map<std::string, std::vector<std::string>> read_csv_map(std::string filenam
         }
 
         std::vector<std::string> v {values[1],values[2],values[3].substr(0, values[3].size()-1)};
-        result.insert(std::pair<std::string, std::vector<std::string>>(values[0], v));
+
+        if(result.count(values[0]) > 0){
+            result[values[0]].push_back(v);
+        }
+        else {
+            std::vector<std::vector<std::string>> listOfPotholesInRoad {v};
+            result.insert(std::pair<std::string, std::vector<std::vector<std::string>>>(values[0], listOfPotholesInRoad));
+        }
     }
 
     // Close file
@@ -81,7 +89,12 @@ void PotholesSimulation::initialize(int stage)
         EV << "Initializing " << par("appName").stringValue() << std::endl;
 
         // Read three_cols.csv and ones.csv
-        potholes= read_csv_map("potholes2.csv");
+        if(!potholesMapLoaded){
+            potholesMap = read_potholes_map("potholes2.csv");
+            potholesMapLoaded = true;
+        }
+
+        hitPotholes = 0;
     }
     else if (stage == 1) {
         // Initializing members that require initialized other modules goes here
@@ -92,6 +105,9 @@ void PotholesSimulation::finish()
 {
     DemoBaseApplLayer::finish();
     // statistics recording goes here
+
+    recordScalar("nodeId", myId);
+    recordScalar("hitPotholes",hitPotholes);
 }
 
 void PotholesSimulation::onBSM(DemoSafetyMessage* bsm)
@@ -133,18 +149,23 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
 
     std::string roadId = traciVehicle->getRoadId();
 
-    if(potholes.count(roadId) > 0){
-        std::vector<std::string>pothole = potholes[roadId];
+    if(potholesMap.count(roadId) > 0){
+        std::vector<std::vector<std::string>> potholes = potholesMap[roadId];
 
-        int potholeLane = std::stoi(pothole[1]);
-        int currentLane = traciVehicle->getLaneIndex();
+        for(std::vector<std::string> pothole : potholes){
 
-        double potholePosition = std::stod(pothole[0]);
-        double currentPosition = traciVehicle->getLanePosition();
+            int potholeLane = std::stoi(pothole[1]);
+            int currentLane = traciVehicle->getLaneIndex();
 
-        if(currentLane == potholeLane){
-            if(std::abs(currentPosition - potholePosition) < 0.8 ){
-                std::cout << "Encontrou um buraco" <<std::endl;
+            double potholePosition = std::stod(pothole[0]);
+            double currentPosition = traciVehicle->getLanePosition();
+
+            if(currentLane == potholeLane){
+                if(std::abs(currentPosition - potholePosition) < 0.8 ){
+                    hitPotholes++;
+
+                    std::cout << "Pothole hit! NodeID:" + std::to_string(myId) <<std::endl;
+                }
             }
         }
     }
