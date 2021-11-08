@@ -21,18 +21,44 @@
 //
 
 #include "veins/modules/application/traci/PotholesDetectionRSU.h"
-
 #include "veins/modules/application/traci/PotholeDetectionMessage_m.h"
+#include "veins/modules/application/traci/PotholeReportMessage_m.h"
 
 using namespace veins;
 
 Define_Module(veins::PotholesDetectionRSU);
 
+void PotholesDetectionRSU::handleSelfMsg(cMessage* msg){
+    PotholeReportMessage* message = new PotholeReportMessage();
+    populateWSM(message); //populating lower layers
+
+    PotholeCollection collection;
+    collection.potholes = detectedPotholes;
+
+    message->setPotholes(collection);
+    message->setRetransmissionNumber(0);
+    message->setEventUniqueId(getEnvir()->getUniqueNumber());
+
+    //if channel changing is enabled, send in service channel 2.
+    if(dataOnSch){
+        startService(Channel::sch2, 58, "Potholes information service");
+        scheduleAt(computeAsynchronousSendingTime(1, ChannelType::service), message);
+    }
+    else { //send right away, no switching is available
+        sendDown(message);
+    }
+
+    scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
+
+}
+
+void PotholesDetectionRSU::onBSM(DemoSafetyMessage* bsm){
+
+}
 
 void PotholesDetectionRSU::onWSA(DemoServiceAdvertisment* wsa)
 {
     // if this RSU receives a WSA for service 57, it will tune to the chan
-    std::cout<< "RSU received WSA" << std::endl;
 
     if (wsa->getPsid() == 57) {
         mac->changeServiceChannel(static_cast<Channel>(wsa->getTargetChannel()));
@@ -41,7 +67,10 @@ void PotholesDetectionRSU::onWSA(DemoServiceAdvertisment* wsa)
 
 void PotholesDetectionRSU::onWSM(BaseFrame1609_4* frame)
 {
-    PotholeDetectionMessage* wsm = check_and_cast<PotholeDetectionMessage*>(frame);
-    // this rsu repeats the received traffic update in 2 seconds plus some random delay
-    sendDelayedDown(wsm->dup(), 2 + uniform(0.01, 0.2));
+    if(PotholeDetectionMessage* wsm = check_and_cast<PotholeDetectionMessage*>(frame)){
+        Pothole detectedPothole = wsm->getPothole();
+        detectedPotholes.push_back(detectedPothole); //Assuming I have never seen it before (wrong, need to compare distance someway)
+
+    }
+
 }

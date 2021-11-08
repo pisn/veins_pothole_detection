@@ -24,18 +24,20 @@ cplusplus {{
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/messages/BaseFrame1609_4_m.h"
 #include "veins/base/utils/SimpleAddress.h"
+#include "veins/modules/application/traci/Pothole.h"
 }}
 
 namespace veins;
 
+
 class BaseFrame1609_4;
 class noncobject Coord;
 class LAddress::L2Type extends void;
+class Pothole extends void;
 
 packet PotholeDetectionMessage extends BaseFrame1609_4 {
-    string roadId;
-    double potholePosition;
-    int potholeLane;   
+    Pothole pothole;
+    
     int retransmissionNumber;
     unsigned long eventUniqueId;
     

@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
+// Copyright (C) 2011 David Eckhoff <eckhoff@cs.fau.de>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,26 +20,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#pragma once
+cplusplus {{
+#include "veins/base/utils/Coord.h"
+#include "veins/modules/messages/BaseFrame1609_4_m.h"
+#include "veins/base/utils/SimpleAddress.h"
+#include "veins/modules/application/traci/PotholeCollection.h"
+}}
 
-#include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
-#include "veins/modules/application/traci/Pothole.h"
-
-namespace veins {
-
-/**
- * Small RSU Demo using 11p
- */
-class VEINS_API PotholesDetectionRSU : public DemoBaseApplLayer {
-protected:
-    std::vector<Pothole> detectedPotholes;
-
-    void handleSelfMsg(cMessage* msg) override;
-    void onWSM(BaseFrame1609_4* wsm) override;
-    void onWSA(DemoServiceAdvertisment* wsa) override;
-    void onBSM(DemoSafetyMessage *bsm) override;
+namespace veins;
 
 
-};
+class BaseFrame1609_4;
+class noncobject Coord;
+class LAddress::L2Type extends void;
+class PotholeCollection extends void;
 
-} // namespace veins
+
+packet PotholeReportMessage extends BaseFrame1609_4 {
+    PotholeCollection potholes;    
+    int retransmissionNumber;
+    unsigned long eventUniqueId;
+    
+    LAddress::L2Type senderAddress = -1;
+    int serial = 0;
+}

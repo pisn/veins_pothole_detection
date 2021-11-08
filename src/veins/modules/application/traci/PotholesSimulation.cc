@@ -22,6 +22,7 @@
 
 #include <veins/modules/application/traci/PotholesSimulation.h>
 #include "veins/modules/application/traci/PotholeDetectionMessage_m.h"
+#include "veins/modules/application/traci/PotholeReportMessage_m.h"
 #include <map>
 
 using namespace veins;
@@ -119,26 +120,49 @@ void PotholesSimulation::onBSM(DemoSafetyMessage* bsm)
 
 void PotholesSimulation::onWSM(BaseFrame1609_4* wsm)
 {
-    // Your application has received a data message from another car or RSU
-    // code for handling the message goes here, see TraciDemo11p.cc for examples
+    //Received pothole detection communication from another vehicle
+    if(PotholeDetectionMessage* message = dynamic_cast<PotholeDetectionMessage*>(wsm))
+    {
+        if(message->getRetransmissionNumber() > 5)
+        { //Limit of packet retransmission
+            return;
+        }
 
-    PotholeDetectionMessage* message = check_and_cast<PotholeDetectionMessage*>(wsm);
+        if(sentMessages.count(message->getEventUniqueId()) == 0)
+        {
+            findHost()->getDisplayString().setTagArg("i", 1, "blue");
 
-    if(message->getRetransmissionNumber() > 5){ //Limit of packet retransmission
-        return;
+            message->setSenderAddress(myId);
+            message->setSerial(3);
+            message->setRetransmissionNumber(message->getRetransmissionNumber()+1);
+
+            scheduleAt(simTime() + 2 + uniform(0.01, 0.2), message->dup());
+
+            sentMessages.insert(message->getEventUniqueId());
+        }
     }
+    else if (PotholeReportMessage* message = dynamic_cast<PotholeReportMessage*>(wsm)) //receiving potholes periodic report from RSUs
+    {
+        if(message->getRetransmissionNumber() > 5)
+        { //Limit of packet retransmission
+               return;
+        }
 
-    if(sentMessages.count(message->getEventUniqueId()) == 0){
+        reportedPotholes = message->getPotholes();
 
-        findHost()->getDisplayString().setTagArg("i", 1, "blue");
+        //Retransmit received pothole report for other nodes further from the RSU
+        if(sentMessages.count(message->getEventUniqueId()) == 0)
+        {
+            findHost()->getDisplayString().setTagArg("i", 1, "blue");
 
-        message->setSenderAddress(myId);
-        message->setSerial(3);
-        message->setRetransmissionNumber(message->getRetransmissionNumber()+1);
+            message->setSenderAddress(myId);
+            message->setSerial(3);
+            message->setRetransmissionNumber(message->getRetransmissionNumber()+1);
 
-        scheduleAt(simTime() + 2 + uniform(0.01, 0.2), message->dup());
+            scheduleAt(simTime() + 2 + uniform(0.01, 0.2), message->dup());
 
-        sentMessages.insert(message->getEventUniqueId());
+            sentMessages.insert(message->getEventUniqueId());
+        }
     }
 }
 
@@ -170,6 +194,7 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
 
     std::string roadId = traciVehicle->getRoadId();
 
+    //Check if car hit an actual pothole
     if(potholesMap.count(roadId) > 0){
         std::vector<std::vector<std::string>> potholes = potholesMap[roadId];
 
@@ -194,9 +219,14 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
                     //Comunicating RSU of detected pothole
                     PotholeDetectionMessage* message = new PotholeDetectionMessage();
                     populateWSM(message); //populating lower layers
-                    message->setRoadId(roadId.c_str());
-                    message->setPotholePosition(currentPosition);
-                    message->setPotholeLane(currentLane);
+
+                    Pothole detectedPothole;
+                    detectedPothole.roadId = roadId;
+                    detectedPothole.potholePosition = currentPosition;
+                    detectedPothole.potholeLane = currentLane;
+
+                    message->setPothole(detectedPothole);
+
                     message->setRetransmissionNumber(0);
                     message->setEventUniqueId(getEnvir()->getUniqueNumber());
 

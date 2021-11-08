@@ -57,6 +57,7 @@ private:
     int potholeHitRoundCount;
     int hitPotholes;
     std::set<unsigned long> sentMessages;
+    PotholeCollection reportedPotholes;
 
 };
 
