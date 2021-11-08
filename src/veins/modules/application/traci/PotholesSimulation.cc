@@ -124,12 +124,17 @@ void PotholesSimulation::onWSM(BaseFrame1609_4* wsm)
 
     PotholeDetectionMessage* message = check_and_cast<PotholeDetectionMessage*>(wsm);
 
+    if(message->getRetransmissionNumber() > 5){ //Limit of packet retransmission
+        return;
+    }
+
     if(sentMessages.count(message->getEventUniqueId()) == 0){
 
         findHost()->getDisplayString().setTagArg("i", 1, "blue");
 
         message->setSenderAddress(myId);
         message->setSerial(3);
+        message->setRetransmissionNumber(message->getRetransmissionNumber()+1);
 
         scheduleAt(simTime() + 2 + uniform(0.01, 0.2), message->dup());
 
@@ -192,6 +197,7 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
                     message->setRoadId(roadId.c_str());
                     message->setPotholePosition(currentPosition);
                     message->setPotholeLane(currentLane);
+                    message->setRetransmissionNumber(0);
                     message->setEventUniqueId(getEnvir()->getUniqueNumber());
 
                     sentMessages.insert(message->getEventUniqueId());

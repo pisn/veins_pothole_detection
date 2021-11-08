@@ -28,6 +28,7 @@ using namespace veins;
 
 Define_Module(veins::PotholesDetectionRSU);
 
+
 void PotholesDetectionRSU::onWSA(DemoServiceAdvertisment* wsa)
 {
     // if this RSU receives a WSA for service 57, it will tune to the chan
@@ -41,7 +42,6 @@ void PotholesDetectionRSU::onWSA(DemoServiceAdvertisment* wsa)
 void PotholesDetectionRSU::onWSM(BaseFrame1609_4* frame)
 {
     PotholeDetectionMessage* wsm = check_and_cast<PotholeDetectionMessage*>(frame);
-    std::cout<< "RSU received WSM" << std::endl;
     // this rsu repeats the received traffic update in 2 seconds plus some random delay
     sendDelayedDown(wsm->dup(), 2 + uniform(0.01, 0.2));
 }

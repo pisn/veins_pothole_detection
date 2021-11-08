@@ -36,6 +36,7 @@ packet PotholeDetectionMessage extends BaseFrame1609_4 {
     string roadId;
     double potholePosition;
     int potholeLane;   
+    int retransmissionNumber;
     unsigned long eventUniqueId;
     
     LAddress::L2Type senderAddress = -1;
