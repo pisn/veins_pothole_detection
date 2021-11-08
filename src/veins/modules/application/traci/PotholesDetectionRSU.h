@@ -30,8 +30,6 @@ namespace veins {
  * Small RSU Demo using 11p
  */
 class VEINS_API PotholesDetectionRSU : public DemoBaseApplLayer {
-public:
-    void initialize(int stage) override;
 protected:
     void onWSM(BaseFrame1609_4* wsm) override;
     void onWSA(DemoServiceAdvertisment* wsa) override;

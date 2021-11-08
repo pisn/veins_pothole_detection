@@ -135,9 +135,6 @@ void PotholesSimulation::onWSM(BaseFrame1609_4* wsm)
 
         sentMessages.insert(message->getEventUniqueId());
     }
-    else {
-        std::cout << "Detection message was already retransmitted. Do nothing" << std::endl;
-    }
 }
 
 void PotholesSimulation::onWSA(DemoServiceAdvertisment* wsa)

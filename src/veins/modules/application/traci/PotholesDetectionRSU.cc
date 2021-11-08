@@ -28,10 +28,6 @@ using namespace veins;
 
 Define_Module(veins::PotholesDetectionRSU);
 
-void PotholesDetectionRSU::initialize(int stage){
-
-}
-
 void PotholesDetectionRSU::onWSA(DemoServiceAdvertisment* wsa)
 {
     // if this RSU receives a WSA for service 57, it will tune to the chan
