@@ -51,7 +51,7 @@
     <flow id="caminhoes_descida" type="Caminhoes" begin="0.00" color="255,63,0" departLane="random" route="anchieta_descida" end="0.00" number="0"/>
     <flow id="caminhoes_subindo" type="Caminhoes" begin="0.00" departLane="random" route="anchieta_subida" end="0.00" number="0"/>
     <flow id="carros_descida_anchieta" begin="0.00" departLane="random" route="anchieta_descida" end="0.00" number="0"/>
-    <flow id="carros_descida_imigrantes" begin="0.00" departLane="random" route="descida_imigrantes" end="3600.00" vehsPerHour="699.98"/>
+    <flow id="carros_descida_imigrantes" begin="0.00" departLane="random" route="descida_imigrantes" end="3600.00" vehsPerHour="2000.00"/>
     <flow id="carros_subida_imigrantes" begin="0.00" departLane="random" route="subida_imigrantes" end="0.00" number="0"/>
     <flow id="carros_subindo" begin="0.00" departLane="random" route="anchieta_subida" end="0.00" number="0"/>
     <flow id="onibus_descendo" type="onibus" begin="0.00" color="255,0,249" departLane="random" route="anchieta_descida" end="0.00" number="0"/>

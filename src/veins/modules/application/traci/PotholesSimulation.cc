@@ -124,11 +124,20 @@ void PotholesSimulation::onWSM(BaseFrame1609_4* wsm)
 
     PotholeDetectionMessage* message = check_and_cast<PotholeDetectionMessage*>(wsm);
 
-    // repeat the received traffic update once in 2 seconds plus some random delay
-    message->setSenderAddress(myId);
-    message->setSerial(3);
-    scheduleAt(simTime() + 2 + uniform(0.01, 0.2), message->dup());
+    if(sentMessages.count(message->getEventUniqueId()) == 0){
 
+        findHost()->getDisplayString().setTagArg("i", 1, "blue");
+
+        message->setSenderAddress(myId);
+        message->setSerial(3);
+
+        scheduleAt(simTime() + 2 + uniform(0.01, 0.2), message->dup());
+
+        sentMessages.insert(message->getEventUniqueId());
+    }
+    else {
+        std::cout << "Detection message was already retransmitted. Do nothing" << std::endl;
+    }
 }
 
 void PotholesSimulation::onWSA(DemoServiceAdvertisment* wsa)
@@ -139,9 +148,16 @@ void PotholesSimulation::onWSA(DemoServiceAdvertisment* wsa)
 
 void PotholesSimulation::handleSelfMsg(cMessage* msg)
 {
-    DemoBaseApplLayer::handleSelfMsg(msg);
     // this method is for self messages (mostly timers)
     // it is important to call the DemoBaseApplLayer function for BSM and WSM transmission
+    if (PotholeDetectionMessage* wsm = dynamic_cast<PotholeDetectionMessage*>(msg))
+    {
+        sendDown(wsm->dup());
+    }
+    else
+    {
+        DemoBaseApplLayer::handleSelfMsg(msg);
+    }
 }
 
 void PotholesSimulation::handlePositionUpdate(cObject* obj)
@@ -176,8 +192,12 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
                     //Comunicating RSU of detected pothole
                     PotholeDetectionMessage* message = new PotholeDetectionMessage();
                     populateWSM(message); //populating lower layers
+                    message->setRoadId(roadId.c_str());
                     message->setPotholePosition(currentPosition);
                     message->setPotholeLane(currentLane);
+                    message->setEventUniqueId(getEnvir()->getUniqueNumber());
+
+                    sentMessages.insert(message->getEventUniqueId());
 
                     //if channel changing is enabled, send in service channel 2.
                     if(dataOnSch){

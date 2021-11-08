@@ -33,8 +33,11 @@ class noncobject Coord;
 class LAddress::L2Type extends void;
 
 packet PotholeDetectionMessage extends BaseFrame1609_4 {
+    string roadId;
     double potholePosition;
-    int potholeLane;    
+    int potholeLane;   
+    unsigned long eventUniqueId;
+    
     LAddress::L2Type senderAddress = -1;
     int serial = 0;
 }

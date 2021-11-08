@@ -53,9 +53,11 @@ protected:
     void handleSelfMsg(cMessage* msg) override;
     void handlePositionUpdate(cObject* obj) override;
 
-    int hitPotholes;
 private:
     int potholeHitRoundCount;
+    int hitPotholes;
+    std::set<unsigned long> sentMessages;
+
 };
 
 
