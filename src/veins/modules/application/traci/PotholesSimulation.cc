@@ -266,12 +266,15 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
                 }
 
                 //if is currently on the leftiest lane, change to right. If not, change to left
-                if(currentLane == numberOfLanes){
+                if(currentLane == (numberOfLanes - 1)){
                     traciVehicle->changeLane(currentLane-1, neededDuration*2);
                 }
                 else{
                     traciVehicle->changeLane(currentLane+1, neededDuration*2);
                 }
+
+                findHost()->getDisplayString().setTagArg("i", 1, "yellow");
+                potholeHitRoundCount = 0;
             }
         }
     }
