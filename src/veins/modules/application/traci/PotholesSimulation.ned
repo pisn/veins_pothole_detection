@@ -29,5 +29,6 @@ import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
 simple PotholesSimulation extends DemoBaseApplLayer
 {
     @class(veins::PotholesSimulation);
+    bool warnPotholes = default(false);
     string appName = default("PotholesSimulation");
 }

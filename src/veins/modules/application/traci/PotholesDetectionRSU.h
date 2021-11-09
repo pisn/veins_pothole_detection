@@ -34,6 +34,7 @@ class VEINS_API PotholesDetectionRSU : public DemoBaseApplLayer {
 protected:
     std::vector<Pothole> detectedPotholes;
 
+    void initialize() override;
     void handleSelfMsg(cMessage* msg) override;
     void onWSM(BaseFrame1609_4* wsm) override;
     void onWSA(DemoServiceAdvertisment* wsa) override;
@@ -41,7 +42,7 @@ protected:
 
 private:
     std::set<unsigned long> receivedMessages;
-
+    bool warnPotholes;
 };
 
 } // namespace veins

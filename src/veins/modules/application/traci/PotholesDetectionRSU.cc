@@ -28,27 +28,39 @@ using namespace veins;
 
 Define_Module(veins::PotholesDetectionRSU);
 
+void PotholesDetectionRSU::initialize(int stage){
+    DemoBaseApplLayer::initialize(stage);
+
+    if(stage==0){
+        warnPotholes = par("warnPotholes").boolValue();
+    }
+}
+
 void PotholesDetectionRSU::handleSelfMsg(cMessage* msg){
-    PotholeReportMessage* message = new PotholeReportMessage();
-    populateWSM(message); //populating lower layers
 
-    PotholeCollection collection;
-    collection.potholes = detectedPotholes;
+    if(warnPotholes){
 
-    message->setPotholes(collection);
-    message->setRetransmissionNumber(0);
-    message->setEventUniqueId(getEnvir()->getUniqueNumber());
+        PotholeReportMessage* message = new PotholeReportMessage();
+        populateWSM(message); //populating lower layers
 
-    //if channel changing is enabled, send in service channel 2.
-    if(dataOnSch){
-        startService(Channel::sch2, 58, "Potholes information service");
-        scheduleAt(computeAsynchronousSendingTime(1, ChannelType::service), message);
+        PotholeCollection collection;
+        collection.potholes = detectedPotholes;
+
+        message->setPotholes(collection);
+        message->setRetransmissionNumber(0);
+        message->setEventUniqueId(getEnvir()->getUniqueNumber());
+
+        //if channel changing is enabled, send in service channel 2.
+        if(dataOnSch){
+            startService(Channel::sch2, 58, "Potholes information service");
+            scheduleAt(computeAsynchronousSendingTime(1, ChannelType::service), message);
+        }
+        else { //send right away, no switching is available
+            sendDown(message);
+        }
+
+        scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
     }
-    else { //send right away, no switching is available
-        sendDown(message);
-    }
-
-    scheduleAt(simTime() + beaconInterval, sendBeaconEvt);
 
 }
 

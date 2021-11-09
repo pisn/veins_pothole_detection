@@ -98,6 +98,8 @@ void PotholesSimulation::initialize(int stage)
         }
 
         hitPotholes = 0;
+
+        warnPotholes = par("warnPotholes").boolValue();
     }
     else if (stage == 1) {
         // Initializing members that require initialized other modules goes here
@@ -215,35 +217,37 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
                 if(distanceToPothole < 0.8 ){
                     hitPotholes++;
 
-                    std::cout << "Pothole hit! NodeID:" + std::to_string(myId) + " Distance:" + double_to_str(distanceToPothole) <<std::endl;
+                    EV_TRACE << "Pothole hit! NodeID:" + std::to_string(myId) <<std::endl;
 
                     //Updating color in simulation
                     findHost()->getDisplayString().setTagArg("i", 1, "red");
                     potholeHitRoundCount = 0;
 
-                    //Comunicating RSU of detected pothole
-                    PotholeDetectionMessage* message = new PotholeDetectionMessage();
-                    populateWSM(message); //populating lower layers
+                    if (warnPotholes) {
+                        //Comunicating RSU of detected pothole
+                        PotholeDetectionMessage* message = new PotholeDetectionMessage();
+                        populateWSM(message); //populating lower layers
 
-                    Pothole detectedPothole;
-                    detectedPothole.roadId = roadId;
-                    detectedPothole.potholePosition = currentPosition;
-                    detectedPothole.potholeLane = currentLane;
+                        Pothole detectedPothole;
+                        detectedPothole.roadId = roadId;
+                        detectedPothole.potholePosition = currentPosition;
+                        detectedPothole.potholeLane = currentLane;
 
-                    message->setPothole(detectedPothole);
+                        message->setPothole(detectedPothole);
 
-                    message->setRetransmissionNumber(0);
-                    message->setEventUniqueId(getEnvir()->getUniqueNumber());
+                        message->setRetransmissionNumber(0);
+                        message->setEventUniqueId(getEnvir()->getUniqueNumber());
 
-                    sentMessages.insert(message->getEventUniqueId());
+                        sentMessages.insert(message->getEventUniqueId());
 
-                    //if channel changing is enabled, send in service channel 2.
-                    if(dataOnSch){
-                        startService(Channel::sch2, 57, "Potholes information service");
-                        scheduleAt(computeAsynchronousSendingTime(1, ChannelType::service), message);
-                    }
-                    else { //send right away, no switching is available
-                        sendDown(message);
+                        //if channel changing is enabled, send in service channel 2.
+                        if(dataOnSch){
+                            startService(Channel::sch2, 57, "Potholes information service");
+                            scheduleAt(computeAsynchronousSendingTime(1, ChannelType::service), message);
+                        }
+                        else { //send right away, no switching is available
+                            sendDown(message);
+                        }
                     }
 
                 }
@@ -251,30 +255,34 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
         }
     }
 
-    //Checking if car has been alerted by RSUs of pothole ahead. If it has, change lane
-    if(reportedPotholes.count(roadId) > 0){
-        for(Pothole p : reportedPotholes[roadId]){
-            double distanceToPothole = p.potholePosition - currentPosition;
+    if (warnPotholes) {
+        //Checking if car has been alerted by RSUs of pothole ahead. If it has, change lane
+        if(reportedPotholes.count(roadId) > 0){
+            for(Pothole p : reportedPotholes[roadId]){
+                double distanceToPothole = p.potholePosition - currentPosition;
 
-            if(p.potholeLane == currentLane && distanceToPothole < 200 && distanceToPothole > 0){
-                TraCICommandInterface::Road* road = new TraCICommandInterface::Road(mobility->getCommandInterface(), roadId);
-                int32_t numberOfLanes = road->getLanesNumber();
+                if(p.potholeLane == currentLane && distanceToPothole < 200 && distanceToPothole > 0){
+                    TraCICommandInterface::Road* road = new TraCICommandInterface::Road(mobility->getCommandInterface(), roadId);
+                    int32_t numberOfLanes = road->getLanesNumber();
 
-                double neededDuration = distanceToPothole/traciVehicle->getSpeed();
-                if(neededDuration < 5){
-                    neededDuration = 5; //minimum duration of lane change is 10 seconds.
+                    double neededDuration = distanceToPothole/traciVehicle->getSpeed();
+                    if(neededDuration < 5){
+                        neededDuration = 5; //minimum duration of lane change is 10 seconds.
+                    }
+
+                    //if is currently on the leftiest lane, change to right. If not, change to left
+                    if(currentLane == (numberOfLanes - 1)){
+                        traciVehicle->changeLane(currentLane-1, neededDuration*2);
+                    }
+                    else{
+                        traciVehicle->changeLane(currentLane+1, neededDuration*2);
+                    }
+
+                    EV_TRACE << "Notified of pothole ahead. Changing lane to avoid." << std::endl;
+
+                    findHost()->getDisplayString().setTagArg("i", 1, "yellow");
+                    potholeHitRoundCount = 0;
                 }
-
-                //if is currently on the leftiest lane, change to right. If not, change to left
-                if(currentLane == (numberOfLanes - 1)){
-                    traciVehicle->changeLane(currentLane-1, neededDuration*2);
-                }
-                else{
-                    traciVehicle->changeLane(currentLane+1, neededDuration*2);
-                }
-
-                findHost()->getDisplayString().setTagArg("i", 1, "yellow");
-                potholeHitRoundCount = 0;
             }
         }
     }

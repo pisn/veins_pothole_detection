@@ -60,6 +60,8 @@ private:
     std::set<unsigned long> sentMessages;
     std::map<std::string,std::vector<Pothole>> reportedPotholes;
 
+    bool warnPotholes;
+
 };
 
 

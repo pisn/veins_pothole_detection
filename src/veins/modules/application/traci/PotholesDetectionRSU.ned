@@ -27,4 +27,5 @@ simple PotholesDetectionRSU extends DemoBaseApplLayer
 {
     @class(veins::PotholesDetectionRSU);
     @display("i=block/app2");
+    bool warnPotholes = default(false);
 }
