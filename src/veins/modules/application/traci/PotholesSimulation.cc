@@ -198,6 +198,9 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
 
     std::string roadId = traciVehicle->getRoadId();
 
+    int currentLane = traciVehicle->getLaneIndex();
+    double currentPosition = traciVehicle->getLanePosition();
+
     //Check if car hit an actual pothole
     if(potholesMap.count(roadId) > 0){
         std::vector<std::vector<std::string>> potholes = potholesMap[roadId];
@@ -205,16 +208,14 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
         for(std::vector<std::string> pothole : potholes){
 
             int potholeLane = std::stoi(pothole[1]);
-            int currentLane = traciVehicle->getLaneIndex();
-
             double potholePosition = std::stod(pothole[0]);
-            double currentPosition = traciVehicle->getLanePosition();
+            double distanceToPothole = std::abs(potholePosition - currentPosition);
 
             if(currentLane == potholeLane){
-                if(std::abs(currentPosition - potholePosition) < 0.8 ){
+                if(distanceToPothole < 0.8 ){
                     hitPotholes++;
 
-                    std::cout << "Pothole hit! NodeID:" + std::to_string(myId) <<std::endl;
+                    std::cout << "Pothole hit! NodeID:" + std::to_string(myId) + " Distance:" + double_to_str(distanceToPothole) <<std::endl;
 
                     //Updating color in simulation
                     findHost()->getDisplayString().setTagArg("i", 1, "red");
@@ -245,6 +246,31 @@ void PotholesSimulation::handlePositionUpdate(cObject* obj)
                         sendDown(message);
                     }
 
+                }
+            }
+        }
+    }
+
+    //Checking if car has been alerted by RSUs of pothole ahead. If it has, change lane
+    if(reportedPotholes.count(roadId) > 0){
+        for(Pothole p : reportedPotholes[roadId]){
+            double distanceToPothole = p.potholePosition - currentPosition;
+
+            if(p.potholeLane == currentLane && distanceToPothole < 200 && distanceToPothole > 0){
+                TraCICommandInterface::Road* road = new TraCICommandInterface::Road(mobility->getCommandInterface(), roadId);
+                int32_t numberOfLanes = road->getLanesNumber();
+
+                double neededDuration = distanceToPothole/traciVehicle->getSpeed();
+                if(neededDuration < 5){
+                    neededDuration = 5; //minimum duration of lane change is 10 seconds.
+                }
+
+                //if is currently on the leftiest lane, change to right. If not, change to left
+                if(currentLane == numberOfLanes){
+                    traciVehicle->changeLane(currentLane-1, neededDuration*2);
+                }
+                else{
+                    traciVehicle->changeLane(currentLane+1, neededDuration*2);
                 }
             }
         }

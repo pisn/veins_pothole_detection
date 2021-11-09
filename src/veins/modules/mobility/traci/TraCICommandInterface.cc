@@ -147,6 +147,16 @@ void TraCICommandInterface::Vehicle::setSpeed(double speed)
     ASSERT(buf.eof());
 }
 
+void TraCICommandInterface::Vehicle::changeLane(uint8_t laneIndex, double timeGo) {
+    uint8_t variableId = CMD_CHANGELANE;
+    uint8_t variableType = TYPE_COMPOUND;
+    int32_t count = 2;
+    uint8_t laneIndexT = TYPE_BYTE;
+    uint8_t timeT = TYPE_DOUBLE;
+    TraCIBuffer buf = traci->connection.query(CMD_SET_VEHICLE_VARIABLE, TraCIBuffer() << variableId << nodeId << variableType << count << laneIndexT << laneIndex << timeT << timeGo);
+    ASSERT(buf.eof());
+}
+
 void TraCICommandInterface::Vehicle::setMaxSpeed(double speed)
 {
     uint8_t variableId = VAR_MAXSPEED;
@@ -258,6 +268,11 @@ std::list<std::string> TraCICommandInterface::getRoadIds()
 double TraCICommandInterface::Road::getCurrentTravelTime()
 {
     return traci->genericGetDouble(CMD_GET_EDGE_VARIABLE, roadId, VAR_CURRENT_TRAVELTIME, RESPONSE_GET_EDGE_VARIABLE);
+}
+
+int32_t TraCICommandInterface::Road::getLanesNumber()
+{
+    return traci->genericGetInt(CMD_GET_EDGE_VARIABLE, roadId, VAR_LANE_INDEX, RESPONSE_GET_EDGE_VARIABLE);
 }
 
 double TraCICommandInterface::Road::getMeanSpeed()

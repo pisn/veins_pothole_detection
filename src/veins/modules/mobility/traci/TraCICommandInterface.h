@@ -137,6 +137,7 @@ public:
 
         void setSpeedMode(int32_t bitset);
         void setSpeed(double speed);
+        void changeLane(uint8_t laneIndex, double timeGo);
         void setMaxSpeed(double speed);
         TraCIColor getColor();
         void setColor(const TraCIColor& color);
@@ -275,6 +276,7 @@ public:
 
         double getCurrentTravelTime();
         double getMeanSpeed();
+        int32_t getLanesNumber();
 
     protected:
         TraCICommandInterface* traci;
