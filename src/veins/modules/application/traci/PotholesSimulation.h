@@ -25,6 +25,7 @@
 #include "veins/veins.h"
 
 #include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
+#include "veins/modules/application/traci/PotholeCollection.h"
 
 using namespace omnetpp;
 
@@ -57,7 +58,7 @@ private:
     int potholeHitRoundCount;
     int hitPotholes;
     std::set<unsigned long> sentMessages;
-    PotholeCollection reportedPotholes;
+    std::map<std::string,std::vector<Pothole>> reportedPotholes;
 
 };
 

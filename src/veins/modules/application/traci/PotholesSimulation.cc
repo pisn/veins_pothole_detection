@@ -23,6 +23,7 @@
 #include <veins/modules/application/traci/PotholesSimulation.h>
 #include "veins/modules/application/traci/PotholeDetectionMessage_m.h"
 #include "veins/modules/application/traci/PotholeReportMessage_m.h"
+#include "veins/modules/application/traci/PotholeCollection.h"
 #include <map>
 
 using namespace veins;
@@ -145,16 +146,15 @@ void PotholesSimulation::onWSM(BaseFrame1609_4* wsm)
     {
         if(message->getRetransmissionNumber() > 5)
         { //Limit of packet retransmission
-               return;
+            return;
         }
 
-        reportedPotholes = message->getPotholes();
+        PotholeCollection potCollection = message->getPotholes();
+        reportedPotholes = potCollection.getPotholesRoadMap();
 
         //Retransmit received pothole report for other nodes further from the RSU
         if(sentMessages.count(message->getEventUniqueId()) == 0)
         {
-            findHost()->getDisplayString().setTagArg("i", 1, "blue");
-
             message->setSenderAddress(myId);
             message->setSerial(3);
             message->setRetransmissionNumber(message->getRetransmissionNumber()+1);
@@ -177,6 +177,10 @@ void PotholesSimulation::handleSelfMsg(cMessage* msg)
     // this method is for self messages (mostly timers)
     // it is important to call the DemoBaseApplLayer function for BSM and WSM transmission
     if (PotholeDetectionMessage* wsm = dynamic_cast<PotholeDetectionMessage*>(msg))
+    {
+        sendDown(wsm->dup());
+    }
+    else if (PotholeReportMessage *wsm = dynamic_cast<PotholeReportMessage*>(msg))
     {
         sendDown(wsm->dup());
     }
