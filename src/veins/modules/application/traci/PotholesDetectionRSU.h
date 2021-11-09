@@ -39,6 +39,8 @@ protected:
     void onWSA(DemoServiceAdvertisment* wsa) override;
     void onBSM(DemoSafetyMessage *bsm) override;
 
+private:
+    std::set<unsigned long> receivedMessages;
 
 };
 

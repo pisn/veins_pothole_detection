@@ -68,9 +68,12 @@ void PotholesDetectionRSU::onWSA(DemoServiceAdvertisment* wsa)
 void PotholesDetectionRSU::onWSM(BaseFrame1609_4* frame)
 {
     if(PotholeDetectionMessage* wsm = dynamic_cast<PotholeDetectionMessage*>(frame)){
-        Pothole detectedPothole = wsm->getPothole();
-        detectedPotholes.push_back(detectedPothole); //Assuming I have never seen it before (wrong, need to compare distance someway)
+        if(receivedMessages.count(wsm->getEventUniqueId()) == 0){
+            Pothole detectedPothole = wsm->getPothole();
+            detectedPotholes.push_back(detectedPothole); //Assuming I have never seen it before (wrong, need to compare distance someway)
 
+            receivedMessages.insert(wsm->getEventUniqueId());
+        }
     }
 
 }
