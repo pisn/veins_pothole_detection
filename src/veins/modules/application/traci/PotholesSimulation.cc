@@ -93,7 +93,7 @@ void PotholesSimulation::initialize(int stage)
 
         // Read three_cols.csv and ones.csv
         if(!potholesMapLoaded){
-            potholesMap = read_potholes_map("potholes2.csv");
+            potholesMap = read_potholes_map("potholes3.csv");
             potholesMapLoaded = true;
         }
 

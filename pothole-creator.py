@@ -70,7 +70,7 @@ for route in routes:
             i -= 1
             continue 
 
-        selectedEdge = edges[id]
+        selectedEdge = edges[id]        
         
         if selectedEdge['shape'] == None:
             startNode = nodes[selectedEdge['from']]
@@ -81,7 +81,7 @@ for route in routes:
 
             edgeLength = math.sqrt((endNode[0] - startNode[0])**2 + (endNode[1] - startNode[1])**2)
 
-            potholePosition = random.random()*edgeLength           
+            potholePosition = random.uniform(0.5,1)*edgeLength           
 
         else:       
             shapeIndex = random.randint(0, len(selectedEdge['shape'])-2)
@@ -89,9 +89,14 @@ for route in routes:
             shape_0 = selectedEdge['shape'][shapeIndex]
             shape_1 = selectedEdge['shape'][shapeIndex + 1]        
 
-            edgeLength = math.sqrt((shape_1[0] - shape_0[0])**2 + (shape_1[1] - shape_0[1])**2)
+            edgeLength = math.sqrt((shape_1[0] - shape_0[0])**2 + (shape_1[1] - shape_0[1])**2)        
 
-            potholePosition = random.random()*edgeLength
+
+            potholePosition = random.uniform(0.5,1)*edgeLength
+
+        if(edgeLength < 100):
+            i -=1
+            continue
 
         laneId = random.randint(0, selectedEdge['numLanes'] -1)
 
