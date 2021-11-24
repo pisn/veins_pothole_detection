@@ -126,7 +126,7 @@ void PotholesSimulation::onWSM(BaseFrame1609_4* wsm)
     //Received pothole detection communication from another vehicle
     if(PotholeDetectionMessage* message = dynamic_cast<PotholeDetectionMessage*>(wsm))
     {
-        if(message->getRetransmissionNumber() > 5)
+        if(message->getRetransmissionNumber() > 20)
         { //Limit of packet retransmission
             return;
         }
@@ -146,7 +146,7 @@ void PotholesSimulation::onWSM(BaseFrame1609_4* wsm)
     }
     else if (PotholeReportMessage* message = dynamic_cast<PotholeReportMessage*>(wsm)) //receiving potholes periodic report from RSUs
     {
-        if(message->getRetransmissionNumber() > 5)
+        if(message->getRetransmissionNumber() > 20)
         { //Limit of packet retransmission
             return;
         }
