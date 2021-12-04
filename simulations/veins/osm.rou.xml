@@ -4,11 +4,11 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <sumo-net-file value="/home/pedro/Documents/USP/Redes/Article/Workspace/veins/examples/veins/osm.net.xml"/>
+        <sumo-net-file value="/home/pedro/Documents/USP/Redes/Article/Workspace/veins/simulations/veins/osm.net.xml"/>
     </input>
 
     <output>
-        <output-file value="/home/pedro/Documents/USP/Redes/Article/Workspace/veins/examples/veins/osm.net.xml"/>
+        <output-file value="/home/pedro/Documents/USP/Redes/Article/Workspace/veins/simulations/veins/osm.net.xml"/>
         <output.street-names value="true"/>
     </output>
 
@@ -31,7 +31,7 @@
     </pedestrian>
 
     <netedit>
-        <route-files value="/home/pedro/Documents/USP/Redes/Article/Workspace/veins/examples/veins/teste.rou.xml"/>
+        <route-files value="/home/pedro/Documents/USP/Redes/Article/Workspace/veins/simulations/veins/osm.rou.xml"/>
     </netedit>
 
     <report>

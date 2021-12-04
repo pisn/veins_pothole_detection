@@ -45,7 +45,7 @@ std::map<std::string, std::vector<std::vector<std::string>>> read_potholes_map(s
     std::ifstream myFile(filename);
 
     // Make sure the file is open
-    if(!myFile.is_open()) throw std::runtime_error("Could not open file");
+    if(!myFile.is_open()) throw std::runtime_error("Could not open file " + filename);
 
     // Helper vars
     std::string line;
@@ -93,7 +93,7 @@ void PotholesSimulation::initialize(int stage)
 
         // Read three_cols.csv and ones.csv
         if(!potholesMapLoaded){
-            potholesMap = read_potholes_map("potholes3.csv");
+            potholesMap = read_potholes_map("potholes.csv");
             potholesMapLoaded = true;
         }
 

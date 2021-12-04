@@ -4,12 +4,12 @@
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <sumo-net-file value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/examples/veins/osm.net.xml"/>
+        <sumo-net-file value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/simulations/veins/osm.net.xml"/>
     </input>
 
     <output>
-        <output-file value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/examples/veins/osm.net.xml"/>
-        <plain-output-prefix value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/examples/veins/osm"/>
+        <output-file value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/simulations/veins/osm.net.xml"/>
+        <plain-output-prefix value="/home/pedro/Documents/USP/Mestrado/MAC5910/Article/Workspace/veins/simulations/veins/osm"/>
         <output.street-names value="true"/>
     </output>
 
