@@ -20,10 +20,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include <veins/modules/application/traci/PotholesSimulation.h>
-#include "veins/modules/application/traci/PotholeDetectionMessage_m.h"
-#include "veins/modules/application/traci/PotholeReportMessage_m.h"
-#include "veins/modules/application/traci/PotholeCollection.h"
+#include <veins/modules/application/traci/PotholeDetection/PotholesSimulation.h>
+#include "veins/modules/application/traci/PotholeDetection/PotholeDetectionMessage_m.h"
+#include "veins/modules/application/traci/PotholeDetection/PotholeReportMessage_m.h"
+#include "veins/modules/application/traci/PotholeDetection/PotholeCollection.h"
 #include <map>
 
 using namespace veins;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "veins/modules/application/traci/Pothole.h"
+#include "veins/modules/application/traci/PotholeDetection/Pothole.h"
 #include <map>
 #include <vector>
 

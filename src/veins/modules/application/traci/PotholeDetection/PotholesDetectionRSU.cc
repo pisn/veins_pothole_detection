@@ -20,9 +20,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#include "veins/modules/application/traci/PotholesDetectionRSU.h"
-#include "veins/modules/application/traci/PotholeDetectionMessage_m.h"
-#include "veins/modules/application/traci/PotholeReportMessage_m.h"
+#include "veins/modules/application/traci/PotholeDetection/PotholesDetectionRSU.h"
+#include "veins/modules/application/traci/PotholeDetection/PotholeDetectionMessage_m.h"
+#include "veins/modules/application/traci/PotholeDetection/PotholeReportMessage_m.h"
 
 using namespace veins;
 

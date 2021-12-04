@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
+// Copyright (C) 2006-2011 Christoph Sommer <christoph.sommer@uibk.ac.at>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,15 +20,12 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.application.traci;
+package org.car2x.veins.modules.application.traci.PotholeDetection;
 import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
 
-//
-// Simulation created to test VANETs effects against potholes on roads
-//
-simple PotholesSimulation extends DemoBaseApplLayer
+simple PotholesDetectionRSU extends DemoBaseApplLayer
 {
-    @class(veins::PotholesSimulation);
+    @class(veins::PotholesDetectionRSU);
+    @display("i=block/app2");
     bool warnPotholes = default(false);
-    string appName = default("PotholesSimulation");
 }

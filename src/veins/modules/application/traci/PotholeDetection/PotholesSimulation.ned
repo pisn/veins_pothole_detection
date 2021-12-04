@@ -20,29 +20,15 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-#pragma once
+package org.car2x.veins.modules.application.traci.PotholeDetection;
+import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
 
-#include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
-#include "veins/modules/application/traci/Pothole.h"
-
-namespace veins {
-
-/**
- * Small RSU Demo using 11p
- */
-class VEINS_API PotholesDetectionRSU : public DemoBaseApplLayer {
-protected:
-    std::vector<Pothole> detectedPotholes;
-
-    void initialize(int stage) override;
-    void handleSelfMsg(cMessage* msg) override;
-    void onWSM(BaseFrame1609_4* wsm) override;
-    void onWSA(DemoServiceAdvertisment* wsa) override;
-    void onBSM(DemoSafetyMessage *bsm) override;
-
-private:
-    std::set<unsigned long> receivedMessages;
-    bool warnPotholes;
-};
-
-} // namespace veins
+//
+// Simulation created to test VANETs effects against potholes on roads
+//
+simple PotholesSimulation extends DemoBaseApplLayer
+{
+    @class(veins::PotholesSimulation);
+    bool warnPotholes = default(false);
+    string appName = default("PotholesSimulation");
+}

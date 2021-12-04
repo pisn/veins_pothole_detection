@@ -1,6 +1,6 @@
 
-#include "veins/modules/application/traci/Pothole.h"
-#include <veins/modules/application/traci/PotholeCollection.h>
+#include "veins/modules/application/traci/PotholeDetection/Pothole.h"
+#include <veins/modules/application/traci/PotholeDetection/PotholeCollection.h>
 #include <map>
 #include <vector>
 

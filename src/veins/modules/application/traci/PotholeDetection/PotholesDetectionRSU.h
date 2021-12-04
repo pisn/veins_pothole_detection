@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2006-2011 Christoph Sommer <christoph.sommer@uibk.ac.at>
+// Copyright (C) 2016 David Eckhoff <david.eckhoff@fau.de>
 //
 // Documentation for these modules is at http://veins.car2x.org/
 //
@@ -20,12 +20,29 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //
 
-package org.car2x.veins.modules.application.traci;
-import org.car2x.veins.modules.application.ieee80211p.DemoBaseApplLayer;
+#pragma once
 
-simple PotholesDetectionRSU extends DemoBaseApplLayer
-{
-    @class(veins::PotholesDetectionRSU);
-    @display("i=block/app2");
-    bool warnPotholes = default(false);
-}
+#include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
+#include "veins/modules/application/traci/PotholeDetection/Pothole.h"
+
+namespace veins {
+
+/**
+ * Small RSU Demo using 11p
+ */
+class VEINS_API PotholesDetectionRSU : public DemoBaseApplLayer {
+protected:
+    std::vector<Pothole> detectedPotholes;
+
+    void initialize(int stage) override;
+    void handleSelfMsg(cMessage* msg) override;
+    void onWSM(BaseFrame1609_4* wsm) override;
+    void onWSA(DemoServiceAdvertisment* wsa) override;
+    void onBSM(DemoSafetyMessage *bsm) override;
+
+private:
+    std::set<unsigned long> receivedMessages;
+    bool warnPotholes;
+};
+
+} // namespace veins

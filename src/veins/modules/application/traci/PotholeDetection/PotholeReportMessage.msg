@@ -24,7 +24,7 @@ cplusplus {{
 #include "veins/base/utils/Coord.h"
 #include "veins/modules/messages/BaseFrame1609_4_m.h"
 #include "veins/base/utils/SimpleAddress.h"
-#include "veins/modules/application/traci/PotholeCollection.h"
+#include "veins/modules/application/traci/PotholeDetection/PotholeCollection.h"
 }}
 
 namespace veins;

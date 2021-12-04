@@ -25,7 +25,7 @@
 #include "veins/veins.h"
 
 #include "veins/modules/application/ieee80211p/DemoBaseApplLayer.h"
-#include "veins/modules/application/traci/PotholeCollection.h"
+#include "veins/modules/application/traci/PotholeDetection/PotholeCollection.h"
 
 using namespace omnetpp;
 
