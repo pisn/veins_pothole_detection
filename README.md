@@ -1,5 +1,7 @@
 This is a Veins simulator workspace, developed to simulate VANETs message dispersal in pothole detection applications for academic purposes. This simulator has been developed taking the veins erlangen example as a starting point. 
 
+This simulator has been used to test the scenarios described in the paper [A Pothole Warning System using Vehicular Ad-hoc Networks (VANETs)] (https://ieeexplore.ieee.org/document/10043092)
+
 # How to run
 
 1. First, make sure you have everything in place to run a Veins simulation. You can go through [Veins tutorial](https://veins.car2x.org/tutorial/) to install all dependencies, including OMNET++ and SUMO Simulator. 
